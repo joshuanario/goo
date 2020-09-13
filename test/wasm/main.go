@@ -48,13 +48,13 @@ func main() {
 		HTML: func(state interface{}) string {
 			return fmt.Sprintf("<button id=\"%s\">Click me</button><h1>Click counter: %d</h1>", clickID, state.(int))
 		},
-		BeforePaint: func() {
+		BeforePaint: func(state interface{}) {
 			elem := document.Call("getElementById", clickID)
 			if elem.Truthy() {
 				elem.Call("removeEventListener", "click", onClickCounter)
 			}
 		},
-		AfterPaint: func() {
+		AfterPaint: func(state interface{}) {
 			elem := document.Call("getElementById", clickID)
 			if elem.Truthy() {
 				elem.Call("addEventListener", "click", onClickCounter)

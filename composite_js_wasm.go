@@ -14,8 +14,8 @@ type Composite struct {
 	InitialState interface{}
 	Components   []*Composite
 	HTML         func(state interface{}) string
-	BeforePaint  func()
-	AfterPaint   func()
+	BeforePaint  func(state interface{})
+	AfterPaint   func(state interface{})
 }
 
 func (c *Composite) GetState() interface{} {
@@ -58,12 +58,12 @@ func (c *Composite) reconcile(isReconciled bool) {
 
 func (c *Composite) paint(isDOMUpdated bool) {
 	if c.BeforePaint != nil {
-		c.BeforePaint()
+		c.BeforePaint(*(c.currStatePtr))
 	}
 	if len(c.Components) > 0 {
 		for _, i := range c.Components {
 			if i.BeforePaint != nil {
-				i.BeforePaint()
+				i.BeforePaint(*(i.currStatePtr))
 			}
 		}
 	}
@@ -72,12 +72,12 @@ func (c *Composite) paint(isDOMUpdated bool) {
 	if len(c.Components) > 0 {
 		for _, i := range c.Components {
 			if i.AfterPaint != nil {
-				i.AfterPaint()
+				i.AfterPaint(*(i.currStatePtr))
 			}
 		}
 	}
 	if c.AfterPaint != nil {
-		c.AfterPaint()
+		c.AfterPaint(*(c.currStatePtr))
 	}
 }
 
